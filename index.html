@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doc – Music on Suno</title>
+  <meta name="description" content="Doc (@doctime) – original music on Suno. UK Garage, Drum and Bass, House, Pop, Cinematic Ambient, 80s, 90s, Rock and more.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --surface: #111;
+      --border: #222;
+      --accent: #e8ff00;
+      --accent2: #ff4d00;
+      --text: #e8e8e0;
+      --muted: #555;
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-body: 'DM Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* NOISE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* HEADER */
+    header {
+      position: relative;
+      padding: 80px 40px 60px;
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    header::after {
+      content: 'DOC';
+      position: absolute;
+      right: -20px;
+      top: -30px;
+      font-family: var(--font-display);
+      font-size: 280px;
+      color: transparent;
+      -webkit-text-stroke: 1px #1e1e1e;
+      pointer-events: none;
+      line-height: 1;
+      user-select: none;
+    }
+
+    .header-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .tag-line {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(72px, 12vw, 140px);
+      line-height: 0.9;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      margin-bottom: 24px;
+    }
+
+    h1 span {
+      color: var(--accent);
+    }
+
+    .header-meta {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .suno-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: 1px solid var(--accent);
+      padding: 8px 16px;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .suno-link:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .genre-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .genre-tag {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+    }
+
+    /* MAIN LAYOUT */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* SECTION HEADERS */
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 32px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 48px;
+      letter-spacing: 0.05em;
+      color: var(--text);
+    }
+
+    .section-count {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+
+    /* PLAYLISTS */
+    .playlists {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 2px;
+      margin-bottom: 80px;
+    }
+
+    .playlist-card {
+      display: block;
+      padding: 20px 24px;
+      background: var(--surface);
+      text-decoration: none;
+      color: var(--text);
+      border: 1px solid var(--border);
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .playlist-card::before {
+      content: '▶';
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--accent);
+      opacity: 0;
+      transition: opacity 0.2s, right 0.2s;
+      font-size: 12px;
+    }
+
+    .playlist-card:hover {
+      border-color: var(--accent);
+      background: #161600;
+    }
+
+    .playlist-card:hover::before {
+      opacity: 1;
+      right: 16px;
+    }
+
+    .playlist-name {
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+    }
+
+    /* SONGS LIST */
+    .songs-section {
+      margin-bottom: 80px;
+    }
+
+    .song-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .song-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      color: var(--text);
+      transition: color 0.15s, padding-left 0.15s;
+      position: relative;
+    }
+
+    .song-item:hover {
+      color: var(--accent);
+      padding-left: 8px;
+    }
+
+    .song-num {
+      font-size: 11px;
+      color: var(--muted);
+      min-width: 28px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .song-item:hover .song-num {
+      color: var(--accent2);
+    }
+
+    .song-name {
+      flex: 1;
+      font-size: 13px;
+      letter-spacing: 0.03em;
+    }
+
+    .song-arrow {
+      font-size: 10px;
+      color: var(--muted);
+      opacity: 0;
+      transition: opacity 0.15s;
+      flex-shrink: 0;
+    }
+
+    .song-item:hover .song-arrow {
+      opacity: 1;
+      color: var(--accent);
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 1;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    header, main, footer {
+      animation: fadeUp 0.5s ease both;
+    }
+
+    main { animation-delay: 0.1s; }
+    footer { animation-delay: 0.2s; }
+
+    @media (max-width: 600px) {
+      header { padding: 48px 24px 40px; }
+      main { padding: 40px 24px; }
+      footer { padding: 32px 24px; }
+      header::after { font-size: 160px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <p class="tag-line">Music by</p>
+    <h1>DOC<span>.</span></h1>
+    <div class="header-meta">
+      <a class="suno-link" href="https://suno.com/@doctime" target="_blank" rel="noopener">
+        ↗ Suno Profile @doctime
+      </a>
+      <div class="genre-tags">
+        <span class="genre-tag">UK Garage</span>
+        <span class="genre-tag">Drum &amp; Bass</span>
+        <span class="genre-tag">House</span>
+        <span class="genre-tag">Pop</span>
+        <span class="genre-tag">Cinematic Ambient</span>
+        <span class="genre-tag">80s</span>
+        <span class="genre-tag">90s</span>
+        <span class="genre-tag">Rock</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- PLAYLISTS -->
+  <div class="section-header">
+    <h2 class="section-title">Playlists</h2>
+    <span class="section-count">8 collections</span>
+  </div>
+
+  <div class="playlists">
+    <a class="playlist-card" href="https://suno.com/playlist/613e86a6-d397-40c3-855e-7709149c14c9" target="_blank" rel="noopener">
+      <div class="playlist-name">Love and Support</div>
+    </a>
+    <a class="playlist-card" href="https://suno.com/playlist/b4fe7f2c-fb7c-452b-b026-7002ec424fc6" target="_blank" rel="noopener">
+      <div class="playlist-name">Contest Remixes</div>
+    </a>
+    <a class="playlist-card" href="https://suno.com/playlist/90f482fa-5fe2-42ee-a585-a7404b674628" target="_blank" rel="noopener">
+      <div class="playlist-name">Chiptunes</div>
+    </a>
+    <a class="playlist-card" href="https://suno.com/playlist/9d9a550a-83f4-4937-b5c2-2a93e1e2dde1" target="_blank" rel="noopener">
+      <div class="playlist-name">UKG</div>
+    </a>
+    <a class="playlist-card" href="https://suno.com/playlist/36be5564-42f1-410c-a28a-148d99400ae5" target="_blank" rel="noopener">
+      <div class="playlist-name">Best Of Suno</div>
+    </a>
+    <a class="playlist-card" href="https://suno.com/playlist/e9009d85-42fa-4eaa-a3dc-d7b8fba7dded" target="_blank" rel="noopener">
+      <div class="playlist-name">Soundtrack</div>
+    </a>
+    <a class="playlist-card" href="https://suno.com/playlist/b7b97365-9f9f-406c-9dac-938c2e4898ed" target="_blank" rel="noopener">
+      <div class="playlist-name">House Music v5</div>
+    </a>
+    <a class="playlist-card" href="https://suno.com/playlist/cdb87215-f63e-40ad-862a-6d5d41139826" target="_blank" rel="noopener">
+      <div class="playlist-name">Game-Inspired Music</div>
+    </a>
+  </div>
+
+  <!-- SONGS -->
+  <div class="songs-section">
+    <div class="section-header">
+      <h2 class="section-title">Songs</h2>
+      <span class="section-count">100 tracks</span>
+    </div>
+
+    <div class="song-list">
+      <a class="song-item" href="https://suno.com/s/J2nKFH8pKFmrL9H0" target="_blank" rel="noopener"><span class="song-num">01</span><span class="song-name">Summer Plays (Original Mix)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/2hWM3rVuibftJBlo" target="_blank" rel="noopener"><span class="song-num">02</span><span class="song-name">僕の居場所 (Where I Belong)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/fjXLlddjinCPrkdr" target="_blank" rel="noopener"><span class="song-num">03</span><span class="song-name">Pattern Collapser (Old Skool Mix)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/J3j4jD3Bn6fT6RD3" target="_blank" rel="noopener"><span class="song-num">04</span><span class="song-name">More and More (feat. ElaTina)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/44AP5dR0mWzW8xfh" target="_blank" rel="noopener"><span class="song-num">05</span><span class="song-name">Critical Thinking</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/j4EecLBHIqkXcoLY" target="_blank" rel="noopener"><span class="song-num">06</span><span class="song-name">Old Time Heart</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/oRP7bFdoM0QYHjKI" target="_blank" rel="noopener"><span class="song-num">07</span><span class="song-name">Bloomer – The Antidote (Doc Remix)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/fu7bUu2pcJK1niq8" target="_blank" rel="noopener"><span class="song-num">08</span><span class="song-name">We're Still Playing</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/ysMCVZyS3LXIoudK" target="_blank" rel="noopener"><span class="song-num">09</span><span class="song-name">Not Yet Awake (7AM Remix)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/WAHxb6Km6ILNyIFy" target="_blank" rel="noopener"><span class="song-num">10</span><span class="song-name">Noise Into Meaning</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/EZGgn23Q7hvJmHSD" target="_blank" rel="noopener"><span class="song-num">11</span><span class="song-name">The Wild One (Over-Over The Top Remix)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/veUfeTz4uF4Z1EBM" target="_blank" rel="noopener"><span class="song-num">12</span><span class="song-name">You Wild One</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/D5ypvuCKDHY1KXwb" target="_blank" rel="noopener"><span class="song-num">13</span><span class="song-name">Heat on the Rise</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/X2VixKz8Z8PnIdYV" target="_blank" rel="noopener"><span class="song-num">14</span><span class="song-name">Kiss To Drive Me Wild (feat. ElaTina)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/OcL9yI1yhUA8WkXY" target="_blank" rel="noopener"><span class="song-num">15</span><span class="song-name">King Willonius – Turtleneck (Doc Remix)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/I4msqe1Nv4qdVobw" target="_blank" rel="noopener"><span class="song-num">16</span><span class="song-name">Doc Prescribes (Radio Edit)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/SfOgBURTFnkWaoAJ" target="_blank" rel="noopener"><span class="song-num">17</span><span class="song-name">완벽하게 망가진 (Perfectly Broken)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/KDxJNgvPiS03yWVt" target="_blank" rel="noopener"><span class="song-num">18</span><span class="song-name">Shenanigans!</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/AiHY20QEzsjeOY2Z" target="_blank" rel="noopener"><span class="song-num">19</span><span class="song-name">DANJA – Let's Get High ft. Timbaland (Doc Remix)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/7bj90DaM7O50OGsA" target="_blank" rel="noopener"><span class="song-num">20</span><span class="song-name">I'll Build a Castle</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/z4PLPGCyURKl6Hgj" target="_blank" rel="noopener"><span class="song-num">21</span><span class="song-name">Ramp It Up</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/DdM6fjqjw7tYNSsp" target="_blank" rel="noopener"><span class="song-num">22</span><span class="song-name">Melting Away My Pain</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/CVqN08c07k6JqCyc" target="_blank" rel="noopener"><span class="song-num">23</span><span class="song-name">AVIS – Sober (Doc Remix Ft. ElaTina)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/jnEjHIV69GjYivK2" target="_blank" rel="noopener"><span class="song-num">24</span><span class="song-name">곧 갈게 (I'll Be There Soon)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/NAPGy46HmrMa8rnD" target="_blank" rel="noopener"><span class="song-num">25</span><span class="song-name">My Darling (Spring Remix)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/Hwdwv98Sn96G2qe2" target="_blank" rel="noopener"><span class="song-num">26</span><span class="song-name">takudj – Embedding Jam (Doc Remix)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/UHkG38ehvEMzvBMh" target="_blank" rel="noopener"><span class="song-num">27</span><span class="song-name">Step In – Step Out</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/yPS8UA1JzT8v99wH" target="_blank" rel="noopener"><span class="song-num">28</span><span class="song-name">Carpe Diem</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/cK1KDP0jybWqQ8dN" target="_blank" rel="noopener"><span class="song-num">29</span><span class="song-name">I Keep Searching</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/LHW6ntx1bPV7L5Ha" target="_blank" rel="noopener"><span class="song-num">30</span><span class="song-name">Knowing Your Smile</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/z5DL5TJ2r0bRgXZm" target="_blank" rel="noopener"><span class="song-num">31</span><span class="song-name">Protocol 26: The First Signal</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/9N8H1NjzqQGEsm66" target="_blank" rel="noopener"><span class="song-num">32</span><span class="song-name">Reecebeats – "God's Plan" (Doc DnB Remix)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/tnRz5Gjo33yePDzN" target="_blank" rel="noopener"><span class="song-num">33</span><span class="song-name">Rebecca Becca (feat. ElaTina)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/3rG7ypLHolDj17mG" target="_blank" rel="noopener"><span class="song-num">34</span><span class="song-name">Further Than Before (DnB Chill Remix)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/83w0XyLab1BDq2vn" target="_blank" rel="noopener"><span class="song-num">35</span><span class="song-name">Heavy On Our Souls</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/03bO6LQPkwvgEx51" target="_blank" rel="noopener"><span class="song-num">36</span><span class="song-name">Feeling Pretty Good</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/MmI9kjmC4BmSLtmE" target="_blank" rel="noopener"><span class="song-num">37</span><span class="song-name">Further Than Before (Vocal Mix)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/GDcau5IWld0jJKMW" target="_blank" rel="noopener"><span class="song-num">38</span><span class="song-name">They Are Close</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/FWiuwdNdTSYzrD1r" target="_blank" rel="noopener"><span class="song-num">39</span><span class="song-name">Got Me Losing My Mind</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/R1m7ngAoBMTJxsTu" target="_blank" rel="noopener"><span class="song-num">40</span><span class="song-name">The Road We Take (Vocal Mix)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/Xx2RD2fGZr5lPNyu" target="_blank" rel="noopener"><span class="song-num">41</span><span class="song-name">Rainin</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/vLvuOYanslzp6Ufx" target="_blank" rel="noopener"><span class="song-num">42</span><span class="song-name">Cortex Flush</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/lj97TuJIIFIDGLnr" target="_blank" rel="noopener"><span class="song-num">43</span><span class="song-name">Bada Bada</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/W1gBpv74EeMdBuhc" target="_blank" rel="noopener"><span class="song-num">44</span><span class="song-name">Pop Da Balloon</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/RxxVAnWGCpvkt0MG" target="_blank" rel="noopener"><span class="song-num">45</span><span class="song-name">Why</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/8j26UUM6IZo2WF1W" target="_blank" rel="noopener"><span class="song-num">46</span><span class="song-name">Before The Storm</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/FJI8E5BZUIMAvl7R" target="_blank" rel="noopener"><span class="song-num">47</span><span class="song-name">Pull Me Back (Vocal Mix)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/8ilt3gRbN84Hx6pW" target="_blank" rel="noopener"><span class="song-num">48</span><span class="song-name">korean_hamin – Don't do it (Doc Remix)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/JzNRsuRebiK2n7IS" target="_blank" rel="noopener"><span class="song-num">49</span><span class="song-name">Move With Me</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/Kfy63UYdM0AfHuna" target="_blank" rel="noopener"><span class="song-num">50</span><span class="song-name">Heat Without End</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/lYwrnToRDnHSjKEB" target="_blank" rel="noopener"><span class="song-num">51</span><span class="song-name">Mr. Opportunity</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/KceMonQnTqdLDF7z" target="_blank" rel="noopener"><span class="song-num">52</span><span class="song-name">The Funkmobile</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/yTJ13DLmXtXomHvj" target="_blank" rel="noopener"><span class="song-num">53</span><span class="song-name">My Favourite Thrill (Radio Edit)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/XRYa2mL0d1cOXhJ6" target="_blank" rel="noopener"><span class="song-num">54</span><span class="song-name">My Guiding Light</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/KaNLKmSEGMJc628b" target="_blank" rel="noopener"><span class="song-num">55</span><span class="song-name">The Concept</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/pnzOpKdEgXBbQQ6y" target="_blank" rel="noopener"><span class="song-num">56</span><span class="song-name">Noise Reguleta</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/bKfEgEJt4BXQW0JL" target="_blank" rel="noopener"><span class="song-num">57</span><span class="song-name">Sidewalk Business</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/OU6AeufRar3gG8xL" target="_blank" rel="noopener"><span class="song-num">58</span><span class="song-name">The Cure (DnB Remix)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/Y6HTlbTW1FkP9igo" target="_blank" rel="noopener"><span class="song-num">59</span><span class="song-name">The Cure</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/E7V0slK683VgCHIO" target="_blank" rel="noopener"><span class="song-num">60</span><span class="song-name">Encounter at Highland Keep</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/plzWHovsbOMujz3m" target="_blank" rel="noopener"><span class="song-num">61</span><span class="song-name">Let It Go</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/4NdzGgbEGMXzxFDo" target="_blank" rel="noopener"><span class="song-num">62</span><span class="song-name">Where Legends Still Echo</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/TCosMAWn2eqtlb4k" target="_blank" rel="noopener"><span class="song-num">63</span><span class="song-name">Weekend Vibe (2026 Remix)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/05jKdtlBdUT8PdrQ" target="_blank" rel="noopener"><span class="song-num">64</span><span class="song-name">Valyrio Vēzos</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/wEEOgtVF9YbXtkQP" target="_blank" rel="noopener"><span class="song-num">65</span><span class="song-name">Watson Market Ramen</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/Y0b4tqLizEXT5WSw" target="_blank" rel="noopener"><span class="song-num">66</span><span class="song-name">Quiet on Deck</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/QmBjzILvknGhaYtF" target="_blank" rel="noopener"><span class="song-num">67</span><span class="song-name">Low-Budget Blues</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/Qk63OdwFalYFRtUF" target="_blank" rel="noopener"><span class="song-num">68</span><span class="song-name">We Need Our Future (Breaking Free)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/xGM70yeabaatk1YO" target="_blank" rel="noopener"><span class="song-num">69</span><span class="song-name">Between Sips</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/a2RqpQNMvI5BFtDq" target="_blank" rel="noopener"><span class="song-num">70</span><span class="song-name">City Breath</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/8Frp3EFcorSNMueB" target="_blank" rel="noopener"><span class="song-num">71</span><span class="song-name">The Heat</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/2SoMuKsabXB3du9n" target="_blank" rel="noopener"><span class="song-num">72</span><span class="song-name">Donut – Lonely Nights (Cover)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/5pS8ceQVpSoNrnFT" target="_blank" rel="noopener"><span class="song-num">73</span><span class="song-name">Fuse &amp; Fire</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/pANm9RJWsmlrODrO" target="_blank" rel="noopener"><span class="song-num">74</span><span class="song-name">Concrete Memory</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/auJawmLD34XIgtpK" target="_blank" rel="noopener"><span class="song-num">75</span><span class="song-name">After the Applause</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/RW0BDMPeIYWTJkmv" target="_blank" rel="noopener"><span class="song-num">76</span><span class="song-name">Spring Tube</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/41jYEaIOpAGSzkkY" target="_blank" rel="noopener"><span class="song-num">77</span><span class="song-name">Nightclub (Outside)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/ajcX4alVvuBaMARg" target="_blank" rel="noopener"><span class="song-num">78</span><span class="song-name">Quiet Kind Of Love</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/ziGoUPAmhTGIwmeu" target="_blank" rel="noopener"><span class="song-num">79</span><span class="song-name">Junktown Blacksmith (Instrumental)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/HkealTV6AhULQLbr" target="_blank" rel="noopener"><span class="song-num">80</span><span class="song-name">Back Alley Life</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/jeyZW9otANyKidxQ" target="_blank" rel="noopener"><span class="song-num">81</span><span class="song-name">Flashback</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/0XdgPIcrsUbipZBP" target="_blank" rel="noopener"><span class="song-num">82</span><span class="song-name">Morning Sun</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/FAieJSckur7W7h4Q" target="_blank" rel="noopener"><span class="song-num">83</span><span class="song-name">3 AM Pulse</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/qyc24k9eg3pgkoyh" target="_blank" rel="noopener"><span class="song-num">84</span><span class="song-name">Paradise</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/Z32r5uWBn0CpDjya" target="_blank" rel="noopener"><span class="song-num">85</span><span class="song-name">Driving On</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/kVStK5lSmzhG3Yzy" target="_blank" rel="noopener"><span class="song-num">86</span><span class="song-name">Snow Day</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/D1Z8ytKQD49ianlX" target="_blank" rel="noopener"><span class="song-num">87</span><span class="song-name">Round One</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/fhycpqP2mOaIKeuL" target="_blank" rel="noopener"><span class="song-num">88</span><span class="song-name">Bubble Trouble</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/T89Rjv1GPdkaPQ5B" target="_blank" rel="noopener"><span class="song-num">89</span><span class="song-name">Ancient Synapses</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/78i1fWcGfodqaMeD" target="_blank" rel="noopener"><span class="song-num">90</span><span class="song-name">Totally Lost</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/fASEZponROiZ45MO" target="_blank" rel="noopener"><span class="song-num">91</span><span class="song-name">Siren</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/3CYX9BGUbWrilZsP" target="_blank" rel="noopener"><span class="song-num">92</span><span class="song-name">Not Without Your Love</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/P1vTilDRUEUIeYhe" target="_blank" rel="noopener"><span class="song-num">93</span><span class="song-name">Echoes From The Metropolis</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/nqg9dxB4BN2IyI8W" target="_blank" rel="noopener"><span class="song-num">94</span><span class="song-name">Spire Nexus</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/1UPYmwiBdKRMFCis" target="_blank" rel="noopener"><span class="song-num">95</span><span class="song-name">Deep In The Night</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/AH2k6ToYTuGn4MKi" target="_blank" rel="noopener"><span class="song-num">96</span><span class="song-name">Dancing In The Rain</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/7pJXus7AbJVHFO98" target="_blank" rel="noopener"><span class="song-num">97</span><span class="song-name">Chiptune Gremlin Bonus Level</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/zP3CcUQyFAayUrU4" target="_blank" rel="noopener"><span class="song-num">98</span><span class="song-name">I'm Already There</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/3fFq5IkT1RtBUjNp" target="_blank" rel="noopener"><span class="song-num">99</span><span class="song-name">Unhooking</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/kMPD1m4Pm52W50AU" target="_blank" rel="noopener"><span class="song-num">100</span><span class="song-name">Quiet Heat</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/PAFBPfI13ajPLP7w" target="_blank" rel="noopener"><span class="song-num">101</span><span class="song-name">Drunk On The Music</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/GnwEmhTkme8xv4wy" target="_blank" rel="noopener"><span class="song-num">102</span><span class="song-name">Holodeck Malfunction Insanity</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/0Ft038QeJzc4Ktj5" target="_blank" rel="noopener"><span class="song-num">103</span><span class="song-name">One Voice (Eurodance Remix)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/fPKfsd1osdadyBc7" target="_blank" rel="noopener"><span class="song-num">104</span><span class="song-name">One Voice</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/LbNFL4b2SGGtuVIn" target="_blank" rel="noopener"><span class="song-num">105</span><span class="song-name">A New City</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/0ZRhORtGTRDXzDQQ" target="_blank" rel="noopener"><span class="song-num">106</span><span class="song-name">Smorgasbord</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/M8tns4YZChKcGTvu" target="_blank" rel="noopener"><span class="song-num">107</span><span class="song-name">Chiptune Gremlin Level 4</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/rf0QMZz3TUDVok6n" target="_blank" rel="noopener"><span class="song-num">108</span><span class="song-name">Shchedryk (Cover)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/uJE187CpWq1UHLdR" target="_blank" rel="noopener"><span class="song-num">109</span><span class="song-name">Morning Birds</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/x4ckGCeyL2IywmyR" target="_blank" rel="noopener"><span class="song-num">110</span><span class="song-name">Somethin' With Lime</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/G0Ev4Dlm1YPT1ViN" target="_blank" rel="noopener"><span class="song-num">111</span><span class="song-name">The Sky Is The Limit</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/q44VgOCkUGEVrq9I" target="_blank" rel="noopener"><span class="song-num">112</span><span class="song-name">Rain Before Snow</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/7auTl41OQa9u93Ei" target="_blank" rel="noopener"><span class="song-num">113</span><span class="song-name">Chiptune Gremlin Level 3</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/jVsOnKNuAtx6WVsp" target="_blank" rel="noopener"><span class="song-num">114</span><span class="song-name">Xmas Tube</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/k34DxaSoZfJOskQC" target="_blank" rel="noopener"><span class="song-num">115</span><span class="song-name">This Too Shall Pass</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/WDkaCq4iABREWSQQ" target="_blank" rel="noopener"><span class="song-num">116</span><span class="song-name">Old Crew</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/TBVSz0qyEMyJhp02" target="_blank" rel="noopener"><span class="song-num">117</span><span class="song-name">It's Only Tuesday</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/3dH4P3rG7acnDnPh" target="_blank" rel="noopener"><span class="song-num">118</span><span class="song-name">A Hand to Hold</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/iezwmy3yDvxYglvu" target="_blank" rel="noopener"><span class="song-num">119</span><span class="song-name">She's My Calm</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/40xqbz2SfEhap15h" target="_blank" rel="noopener"><span class="song-num">120</span><span class="song-name">Chiptune Gremlin Level 2</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/QoW9eoOBUnE1qQU3" target="_blank" rel="noopener"><span class="song-num">121</span><span class="song-name">Awesome 200+</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/5HIMDRw9CWejylut" target="_blank" rel="noopener"><span class="song-num">122</span><span class="song-name">Going Home</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/aVGdwHV7YkOgubvy" target="_blank" rel="noopener"><span class="song-num">123</span><span class="song-name">Click by Click</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/N8tOPTlzzjEP4WfG" target="_blank" rel="noopener"><span class="song-num">124</span><span class="song-name">Oopsie-daisy</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/SPPHnDBrJ8sTdWqb" target="_blank" rel="noopener"><span class="song-num">125</span><span class="song-name">Groovin' All Week</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/uCCOFC8fImSziayo" target="_blank" rel="noopener"><span class="song-num">126</span><span class="song-name">Freaky Dish</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/RIo05hZxtqkFcKa1" target="_blank" rel="noopener"><span class="song-num">127</span><span class="song-name">Lost Mainframe</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/LpucqTxcxP2kYk8C" target="_blank" rel="noopener"><span class="song-num">128</span><span class="song-name">Lost My Sound</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/j3SVsgxgw9D4oQKQ" target="_blank" rel="noopener"><span class="song-num">129</span><span class="song-name">Night Patrol</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/W9dPaoDDCiDaXqn7" target="_blank" rel="noopener"><span class="song-num">130</span><span class="song-name">Lannisters Roar</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/nHHD5BCrrc3NNvEx" target="_blank" rel="noopener"><span class="song-num">131</span><span class="song-name">Distant Memory</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/hWDLg54ACap8pgCw" target="_blank" rel="noopener"><span class="song-num">132</span><span class="song-name">World… Just Breathe</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/alpSkcYjgerTdCwx" target="_blank" rel="noopener"><span class="song-num">133</span><span class="song-name">Bim Bam Boom</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/Katj60VDa95edeKJ" target="_blank" rel="noopener"><span class="song-num">134</span><span class="song-name">A Long Night</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/eEScxuDziHptVMJp" target="_blank" rel="noopener"><span class="song-num">135</span><span class="song-name">Dothraki Jam</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/rBgkiVgH6lTqEsbx" target="_blank" rel="noopener"><span class="song-num">136</span><span class="song-name">We Own The Night</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/oI5plh5Feb6qKdZj" target="_blank" rel="noopener"><span class="song-num">137</span><span class="song-name">Its_anaa – Take Me With You (Doc Remix)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/Kcddu7TNchmRG3n4" target="_blank" rel="noopener"><span class="song-num">138</span><span class="song-name">She Stepped in Smilin'</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/8d3lYufNSbSftLn1" target="_blank" rel="noopener"><span class="song-num">139</span><span class="song-name">Mountain Edge</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/kP1VM5Az72PKKYyA" target="_blank" rel="noopener"><span class="song-num">140</span><span class="song-name">My Favourite Girl</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/mlrAtuLnBUiSstPa" target="_blank" rel="noopener"><span class="song-num">141</span><span class="song-name">Desert Pursuit</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/RrkUJLzAVzHRRoE8" target="_blank" rel="noopener"><span class="song-num">142</span><span class="song-name">Jack Tempchin – Only Love Knows (Cover)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/ox7xu0TnQUrWLj9P" target="_blank" rel="noopener"><span class="song-num">143</span><span class="song-name">Here We Are Again</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/Zeq7xksH1xYSAdve" target="_blank" rel="noopener"><span class="song-num">144</span><span class="song-name">Dark Orbit</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/jolNJNfXuHg5GbP4" target="_blank" rel="noopener"><span class="song-num">145</span><span class="song-name">Gravitational – Magnetic</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/ub7ojID4utNd2pZP" target="_blank" rel="noopener"><span class="song-num">146</span><span class="song-name">When Our Souls Meet (v5 Remastered)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/Xf6sQLhJlK1DoWKx" target="_blank" rel="noopener"><span class="song-num">147</span><span class="song-name">Frost On The Window (v5 Remastered)</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/HyNKdivBBts5c00c" target="_blank" rel="noopener"><span class="song-num">148</span><span class="song-name">Chiptune Gremlin</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/lkrHxuJwxoWov40N" target="_blank" rel="noopener"><span class="song-num">149</span><span class="song-name">Steady in the Tide</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/AZtUbuMkU2KgBatr" target="_blank" rel="noopener"><span class="song-num">150</span><span class="song-name">You Left in Smoke</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/cnqNiWtZPMdTi5Pa" target="_blank" rel="noopener"><span class="song-num">151</span><span class="song-name">Velvet Sky</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/83n2lTM5PuwKbYM2" target="_blank" rel="noopener"><span class="song-num">152</span><span class="song-name">One Bassline to Rule Them All</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/KQDzRgYXI0GHIq3m" target="_blank" rel="noopener"><span class="song-num">153</span><span class="song-name">Voyage into Forever</span><span class="song-arrow">↗</span></a>
+      <a class="song-item" href="https://suno.com/s/synVURgCzRZlDD9e" target="_blank" rel="noopener"><span class="song-num">154</span><span class="song-name">Get Up Again</span><span class="song-arrow">↗</span></a>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p>Doc · <a href="https://suno.com/@doctime" target="_blank" rel="noopener">@doctime on Suno</a></p>
+</footer>
+
+</body>
+</html>
